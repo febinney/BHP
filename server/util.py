@@ -1,4 +1,5 @@
 import json
+import os
 import pickle
 import numpy as np
 __locations = None
@@ -25,15 +26,21 @@ def get_location_names():
 
 def load_saved_artifacts():
     print("Loading saved artifacts...start")
-    global __data_columns
-    global __locations
+    global __data_columns, __locations, __model
 
-    with open("./artifacts/columns.json", "r") as f:
+    base_dir = os.path.dirname(__file__)            # directory of util.py
+    artifacts_dir = os.path.join(base_dir, "artifacts")
+
+    cols_path = os.path.join(artifacts_dir, "columns.json")
+    model_path = os.path.join(artifacts_dir, "bangalore_home_prices_model.pickle")
+
+    with open(cols_path, "r") as f:
         __data_columns = json.load(f)['data_columns']
-        __locations = __data_columns[3:]  # First 3 elements are assumed to be non-location features
-    global __model
-    with open("./artifacts/bangalore_home_prices_model.pickle", "rb") as f:
+        __locations = __data_columns[3:]
+
+    with open(model_path, "rb") as f:
         __model = pickle.load(f)
+
     print("Loading saved artifacts...done")
 
 if __name__ == "__main__":
